@@ -2096,6 +2096,16 @@
 <a href="#2096" id="2096">2096</a>
 <a href="#2097" id="2097">2097</a>
 <a href="#2098" id="2098">2098</a>
+<a href="#2099" id="2099">2099</a>
+<a href="#2100" id="2100">2100</a>
+<a href="#2101" id="2101">2101</a>
+<a href="#2102" id="2102">2102</a>
+<a href="#2103" id="2103">2103</a>
+<a href="#2104" id="2104">2104</a>
+<a href="#2105" id="2105">2105</a>
+<a href="#2106" id="2106">2106</a>
+<a href="#2107" id="2107">2107</a>
+<a href="#2108" id="2108">2108</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -2193,7 +2203,7 @@
     }
 
     <span class="doccomment">/// Consume this Manifest, returning its constituent parts
-    </span><span class="kw">pub fn </span>consume(<span class="self">self</span>) -&gt; (Vec&lt;ManifestEntryRef&gt;, ManifestMetadata) {
+    </span><span class="kw">pub fn </span>into_parts(<span class="self">self</span>) -&gt; (Vec&lt;ManifestEntryRef&gt;, ManifestMetadata) {
         <span class="kw">let </span><span class="self">Self </span>{ entries, metadata } = <span class="self">self</span>;
         (entries, metadata)
     }
@@ -2325,14 +2335,14 @@
         )<span class="question-mark">?</span>;
         avro_writer.add_user_metadata(
             <span class="string">"partition-spec"</span>.to_string(),
-            to_vec(<span class="kw-2">&amp;</span>manifest.metadata.partition_spec.fields).map_err(|err| {
+            to_vec(<span class="kw-2">&amp;</span>manifest.metadata.partition_spec.fields()).map_err(|err| {
                 Error::new(ErrorKind::DataInvalid, <span class="string">"Fail to serialize partition spec"</span>)
                     .with_source(err)
             })<span class="question-mark">?</span>,
         )<span class="question-mark">?</span>;
         avro_writer.add_user_metadata(
             <span class="string">"partition-spec-id"</span>.to_string(),
-            manifest.metadata.partition_spec.spec_id.to_string(),
+            manifest.metadata.partition_spec.spec_id().to_string(),
         )<span class="question-mark">?</span>;
         avro_writer.add_user_metadata(
             <span class="string">"format-version"</span>.to_string(),
@@ -2398,12 +2408,12 @@
         <span class="self">self</span>.output.write(Bytes::from(content)).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>partition_summary =
-            <span class="self">self</span>.get_field_summary_vec(<span class="kw-2">&amp;</span>manifest.metadata.partition_spec.fields);
+            <span class="self">self</span>.get_field_summary_vec(manifest.metadata.partition_spec.fields());
 
         <span class="prelude-val">Ok</span>(ManifestFile {
             manifest_path: <span class="self">self</span>.output.location().to_string(),
             manifest_length: length <span class="kw">as </span>i64,
-            partition_spec_id: manifest.metadata.partition_spec.spec_id,
+            partition_spec_id: manifest.metadata.partition_spec.spec_id(),
             content: manifest.metadata.content,
             <span class="comment">// sequence_number and min_sequence_number with UNASSIGNED_SEQUENCE_NUMBER will be replace with
             // real sequence number in `ManifestListWriter`.
@@ -3668,6 +3678,11 @@
                             <span class="string">"v_ts_ntz"</span>,
                             Type::Primitive(PrimitiveType::Timestamp),
                         )),
+                        Arc::new(NestedField::optional(
+                            <span class="number">12</span>,
+                            <span class="string">"v_ts_ns_ntz"</span>,
+                            Type::Primitive(PrimitiveType::TimestampNs
+                        ))),
                     ])
                     .build()
                     .unwrap(),
@@ -3776,6 +3791,11 @@
                             <span class="string">"v_ts_ntz"</span>,
                             Type::Primitive(PrimitiveType::Timestamp),
                         )),
+                        Arc::new(NestedField::optional(
+                            <span class="number">12</span>,
+                            <span class="string">"v_ts_ns_ntz"</span>,
+                            Type::Primitive(PrimitiveType::TimestampNs
+                        )))
                     ])
                     .build()
                     .unwrap(),

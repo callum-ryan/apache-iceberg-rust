@@ -822,6 +822,8 @@
 <a href="#822" id="822">822</a>
 <a href="#823" id="823">823</a>
 <a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
 </pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -968,7 +970,7 @@
                 <span class="kw">let </span>width = <span class="self">self</span>.width <span class="kw">as </span>i64;
                 Datum::long(<span class="self">Self</span>::truncate_i64(<span class="kw-2">*</span>v, width))
             })),
-            PrimitiveLiteral::Decimal(v) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>({
+            PrimitiveLiteral::Int128(v) =&gt; <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>({
                 <span class="kw">let </span>width = <span class="self">self</span>.width <span class="kw">as </span>i128;
                 Datum::decimal(<span class="self">Self</span>::truncate_decimal_i128(<span class="kw-2">*</span>v, width))<span class="question-mark">?
             </span>})),
@@ -998,7 +1000,7 @@
     <span class="kw">use </span><span class="kw">crate</span>::expr::PredicateOperator;
     <span class="kw">use </span><span class="kw">crate</span>::spec::PrimitiveType::{
         Binary, Date, Decimal, Fixed, Int, Long, String <span class="kw">as </span>StringType, Time, Timestamp,
-        Timestamptz, Uuid,
+        TimestampNs, Timestamptz, TimestamptzNs, Uuid,
     };
     <span class="kw">use </span><span class="kw">crate</span>::spec::Type::{Primitive, Struct};
     <span class="kw">use </span><span class="kw">crate</span>::spec::{Datum, NestedField, PrimitiveType, StructType, Transform, Type};
@@ -1043,6 +1045,8 @@
                 (Primitive(Time), <span class="prelude-val">None</span>),
                 (Primitive(Timestamp), <span class="prelude-val">None</span>),
                 (Primitive(Timestamptz), <span class="prelude-val">None</span>),
+                (Primitive(TimestampNs), <span class="prelude-val">None</span>),
+                (Primitive(TimestamptzNs), <span class="prelude-val">None</span>),
                 (
                     Struct(StructType::new(<span class="macro">vec!</span>[NestedField::optional(
                         <span class="number">1</span>,
@@ -1202,7 +1206,7 @@
                 Datum::decimal_from_str(curr)<span class="question-mark">?</span>,
                 Datum::decimal_from_str(next)<span class="question-mark">?</span>,
             ]),
-            <span class="prelude-val">Some</span>(<span class="string">"name IN (10090, 9990, 9890)"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"name IN (9890, 9990, 10090)"</span>),
         )<span class="question-mark">?</span>;
 
         fixture.assert_projection(
@@ -1272,7 +1276,7 @@
                 Datum::decimal_from_str(curr)<span class="question-mark">?</span>,
                 Datum::decimal_from_str(next)<span class="question-mark">?</span>,
             ]),
-            <span class="prelude-val">Some</span>(<span class="string">"name IN (9900, 10000, 10100)"</span>),
+            <span class="prelude-val">Some</span>(<span class="string">"name IN (10000, 10100, 9900)"</span>),
         )<span class="question-mark">?</span>;
 
         fixture.assert_projection(
