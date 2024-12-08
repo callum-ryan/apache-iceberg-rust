@@ -42,15 +42,14 @@ github:
         required_approving_review_count: 1
 
       required_linear_history: true
-
+  del_branch_on_merge: true
   features:
     wiki: false
     issues: true
     projects: true
   collaborators:
-    - Xuanwo
-    - liurenjie1024
     - JanKaul
+    - c-thiel
   ghp_branch: gh-pages
   ghp_path: /
 

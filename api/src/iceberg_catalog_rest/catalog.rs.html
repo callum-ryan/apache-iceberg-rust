@@ -1880,7 +1880,7 @@
 </span><span class="attr">#[derive(Clone, Debug, TypedBuilder)]
 </span><span class="kw">pub struct </span>RestCatalogConfig {
     uri: String,
-    <span class="attr">#[builder(default, setter(strip_option))]
+    <span class="attr">#[builder(default, setter(strip_option(fallback = warehouse_opt)))]
     </span>warehouse: <span class="prelude-ty">Option</span>&lt;String&gt;,
 
     <span class="attr">#[builder(default)]
@@ -3206,7 +3206,7 @@
             .with_schema_id(<span class="number">0</span>)
             .with_summary(Summary {
                 operation: Operation::Append,
-                other: HashMap::from_iter([
+                additional_properties: HashMap::from_iter([
                     (<span class="string">"spark.app.id"</span>, <span class="string">"local-1646787004168"</span>),
                     (<span class="string">"added-data-files"</span>, <span class="string">"1"</span>),
                     (<span class="string">"added-records"</span>, <span class="string">"1"</span>),
